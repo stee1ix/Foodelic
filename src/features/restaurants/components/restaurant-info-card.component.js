@@ -1,51 +1,71 @@
 import React from 'react';
-import styled from 'styled-components/native';
-import { Text, View } from 'react-native';
-import { Card } from 'react-native-paper';
+import { SvgXml } from 'react-native-svg';
+import { Spacer } from '../../../components/spacer/spacer.component';
+import { Text } from '../../../components/typography/text.component';
 
-const RestaurantCard = styled(Card)`
-	background-color: ${props => props.theme.colors.bg.primary};
-`;
+import star from '../../../../assets/star';
+import open from '../../../../assets/open';
 
-const RestaurantCardCover = styled(Card.Cover)`
-	padding: ${props => props.theme.space[3]};
-	background-color: ${props => props.theme.colors.bg.primary};
-`;
-
-const Title = styled(Text)`
-	font-size: ${props => props.theme.fontSizes.body};
-	font-family: ${props => props.theme.fonts.heading};
-	color: ${props => props.theme.colors.ui.primary};
-`;
-
-const Address = styled(Text)`
-	font-size: ${props => props.theme.fontSizes.caption};
-	font-family: ${props => props.theme.fonts.body};
-	color: ${props => props.theme.colors.ui.primary};
-`;
-
-const Info = styled.View`
-	padding: ${props => props.theme.space[3]};
-`;
+import {
+	Address,
+	Info,
+	Open,
+	Rating,
+	RestaurantCard,
+	RestaurantCardCover,
+	Section,
+	SectionEnd,
+	Icon,
+} from './restaurant-info-card.styles';
 
 export default function RestaurantInfoCard({ restaurant = {} }) {
 	const {
-		name = 'KFC',
-		icon,
+		name = 'Khalsa Hotel',
+		icon = 'https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png',
 		photos = [
 			'https://img.freepik.com/free-photo/delicious-vietnamese-food-including-pho-ga-noodles-spring-rolls-white-table_181624-34062.jpg?size=626&ext=jpg',
 		],
-		address = 'Bistupur, Jamshedpur',
+		address = 'Golmuri, Jamshedpur',
 		isOpenNow = true,
 		rating = 4,
-		isClosedTemporarily,
+		isClosedTemporarily = true,
 	} = restaurant;
+
+	const ratingArray = Array.from(new Array(Math.floor(rating)));
 
 	return (
 		<RestaurantCard elevation={5}>
 			<RestaurantCardCover key={name} source={{ uri: photos[0] }} />
 			<Info>
-				<Title>{name}</Title>
+				<Text variant="label">{name}</Text>
+				<Section>
+					<Rating>
+						{ratingArray.map((_, index) => (
+							<SvgXml
+								key={index}
+								xml={star}
+								width={20}
+								height={20}
+							/>
+						))}
+					</Rating>
+					<SectionEnd>
+						{isClosedTemporarily && (
+							<Text variant="error">CLOSED TEMPORARILY</Text>
+						)}
+						<Spacer position="left" size="large">
+							{isOpenNow && (
+								<Open xml={open} width={20} height={20} />
+							)}
+						</Spacer>
+						<Spacer position="left" size="large">
+							<Icon
+								source={{ uri: icon }}
+								style={{ width: 15, height: 15 }}
+							/>
+						</Spacer>
+					</SectionEnd>
+				</Section>
 				<Address>{address}</Address>
 			</Info>
 		</RestaurantCard>

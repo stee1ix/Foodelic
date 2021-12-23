@@ -1,33 +1,54 @@
-import React from 'react';
-import { SafeAreaView, StatusBar, View } from 'react-native';
+import React, { useContext } from 'react';
+import { FlatList } from 'react-native';
 import styled from 'styled-components/native';
-import { Searchbar } from 'react-native-paper';
+import { ActivityIndicator, Colors } from 'react-native-paper';
 
 import RestaurantInfoCard from '../components/restaurant-info-card.component';
+import { Spacer } from '../../../components/spacer/spacer.component';
+import { SafeArea } from '../../../components/utils/safe-area.component';
+import { RestaurantsContext } from '../../../services/restaurants/restaurants.context';
+import { Search } from '../components/search.component';
 
-const SafeArea = styled(SafeAreaView)`
-	flex: 1;
-	margin-top: ${StatusBar.currentHeight}px;
+const RestaurantList = styled(FlatList).attrs({
+	contentContainerStyle: { padding: 16 },
+})``;
+
+const Loading = styled(ActivityIndicator)`
+	margin-left: -25px;
 `;
 
-const SearchContainer = styled(View)`
-	padding: ${props => props.theme.space[3]};
-`;
-
-const RestaurantListContainer = styled(View)`
-	flex: 1;
-	padding: ${props => props.theme.space[3]};
+const LoadingContainer = styled.View`
+	position: absolute;
+	top: 50%;
+	left: 50%;
 `;
 
 export default function RestaurantsScreen() {
+	const { restaurants, isLoading, error } = useContext(RestaurantsContext);
+
 	return (
 		<SafeArea>
-			<SearchContainer>
-				<Searchbar />
-			</SearchContainer>
-			<RestaurantListContainer>
-				<RestaurantInfoCard />
-			</RestaurantListContainer>
+			{isLoading && (
+				<LoadingContainer>
+					<Loading
+						size={50}
+						animating={true}
+						color={Colors.deepOrange600}
+					/>
+				</LoadingContainer>
+			)}
+			<Search />
+			<RestaurantList
+				data={restaurants}
+				renderItem={({ item }) => {
+					return (
+						<Spacer position="bottom" size="large">
+							<RestaurantInfoCard restaurant={item} />
+						</Spacer>
+					);
+				}}
+				keyExtractor={item => item.name}
+			/>
 		</SafeArea>
 	);
 }
