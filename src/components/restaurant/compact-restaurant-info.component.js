@@ -4,6 +4,7 @@ import WebView from 'react-native-webview';
 import { Platform } from 'react-native';
 
 import { Text } from '../typography/text.component';
+import { Spacer } from '../spacer/spacer.component';
 
 const CompactImage = styled.Image`
 	border-radius: 10px;
@@ -25,11 +26,12 @@ const Item = styled.View`
 
 const isAndroid = Platform.OS === 'android';
 
-export const CompactRestaurantInfo = ({ restaurant }) => {
-	const Image = isAndroid ? CompactWebview : CompactImage;
+export const CompactRestaurantInfo = ({ restaurant, isMap }) => {
+	const Image = isAndroid && isMap ? CompactWebview : CompactImage;
 	return (
 		<Item>
 			<Image source={{ uri: restaurant.photos[0] }} />
+			<Spacer position="top" size="small" />
 			<Text center variant="caption" numberOfLines={3}>
 				{restaurant.name}
 			</Text>
