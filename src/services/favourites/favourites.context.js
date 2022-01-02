@@ -1,25 +1,27 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 
 import * as SecureStore from 'expo-secure-store';
+
+import { AuthenticationContext } from '../authentication/authentication.context';
 
 export const FavouritesContext = createContext();
 
 export const FavouritesContextProvider = ({ children }) => {
+	const { user } = useContext(AuthenticationContext);
 	const [favourites, setFavourites] = useState([]);
 
-	const saveFavourites = async value => {
+	const saveFavourites = async (value, uid) => {
 		try {
 			const jsonValue = JSON.stringify(value);
-			await SecureStore.setItemAsync('favourites', jsonValue);
+			await SecureStore.setItemAsync(`favourites-${uid}`, jsonValue);
 		} catch (err) {
 			console.log('error storing', err);
 		}
 	};
 
-	const loadFavourites = async () => {
+	const loadFavourites = async uid => {
 		try {
-			const value = await SecureStore.getItemAsync('favourites');
-			console.log(value);
+			const value = await SecureStore.getItemAsync(`favourites-${uid}`);
 			if (value !== null) {
 				setFavourites(JSON.parse(value));
 			}
@@ -40,12 +42,16 @@ export const FavouritesContextProvider = ({ children }) => {
 	};
 
 	useEffect(() => {
-		loadFavourites();
-	}, []);
+		if (user && user.uid) {
+			loadFavourites(user.uid);
+		}
+	}, [user]);
 
 	useEffect(() => {
-		saveFavourites(favourites);
-	}, [favourites]);
+		if (user && user.uid && favourites.length) {
+			saveFavourites(favourites, user.uid);
+		}
+	}, [favourites, user]);
 
 	return (
 		<FavouritesContext.Provider

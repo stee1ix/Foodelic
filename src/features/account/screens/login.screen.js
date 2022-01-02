@@ -1,4 +1,6 @@
 import React, { useContext, useState } from 'react';
+import { ActivityIndicator, Colors, TextInput } from 'react-native-paper';
+
 import { Spacer } from '../../../components/spacer/spacer.component';
 import { Text } from '../../../components/typography/text.component';
 
@@ -10,20 +12,25 @@ import {
 	AccountCover,
 	AuthButton,
 	AuthInput,
+	ErrorContainer,
+	Title,
 } from '../components/account.styles';
 
 export const LoginScreen = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const { error, onLogin } = useContext(AuthenticationContext);
+	const { error, onLogin, isLoading } = useContext(AuthenticationContext);
 
 	return (
 		<AccountBackground>
+			<Title>Foodelic</Title>
 			<AccountCover />
 			<AccountContainer>
 				<AuthInput
+					mode="outlined"
 					label="Email"
 					value={email}
+					left={<TextInput.Icon name="email" color="grey" />}
 					textContentType="emailAddress"
 					keyboardType="email-address"
 					autoCapitalize="none"
@@ -31,27 +38,35 @@ export const LoginScreen = () => {
 				/>
 				<Spacer size="large" position="top">
 					<AuthInput
+						mode="outlined"
 						label="Password"
 						value={password}
+						left={<TextInput.Icon name="lock" color="grey" />}
 						textContentType="password"
 						secureTextEntry
 						autoCapitalize="none"
-						secure
 						onChangeText={p => setPassword(p)}
 					/>
 				</Spacer>
 				{error && (
-					<Spacer position="top" size="large">
+					<ErrorContainer>
 						<Text variant="error">{error}</Text>
-					</Spacer>
+					</ErrorContainer>
 				)}
 				<Spacer size="large" position="top">
-					<AuthButton
-						icon="lock-open"
-						mode="contained"
-						onPress={() => onLogin(email, password)}>
-						Login
-					</AuthButton>
+					{!isLoading ? (
+						<AuthButton
+							icon="lock-open"
+							mode="contained"
+							onPress={() => onLogin(email, password)}>
+							Login
+						</AuthButton>
+					) : (
+						<ActivityIndicator
+							animating={true}
+							color={Colors.blue300}
+						/>
+					)}
 				</Spacer>
 			</AccountContainer>
 		</AccountBackground>

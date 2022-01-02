@@ -7,11 +7,13 @@ import {
 	AccountContainer,
 	AccountCover,
 	AuthButton,
+	Title,
 } from '../components/account.styles';
 
 export const AccountScreen = ({ navigation }) => {
 	return (
 		<AccountBackground>
+			<Title>Foodelic</Title>
 			<AccountCover />
 			<AccountContainer>
 				<AuthButton
