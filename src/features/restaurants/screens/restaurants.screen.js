@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import { FlatList } from 'react-native';
 import styled from 'styled-components/native';
 import { ActivityIndicator, Colors } from 'react-native-paper';
 
@@ -12,10 +11,7 @@ import { FavouritesContext } from '../../../services/favourites/favourites.conte
 
 import { Search } from '../components/search.component';
 import RestaurantInfoCard from '../components/restaurant-info-card.component';
-
-const RestaurantList = styled(FlatList).attrs({
-	contentContainerStyle: { padding: 16 },
-})``;
+import { RestaurantList } from '../components/restaurant-list.styles';
 
 const Loading = styled(ActivityIndicator)`
 	margin-left: -25px;
